@@ -10,4 +10,4 @@ The Hammer spectral typing algorithm was originally developed for use on late-ty
 The distribution provided above contains a [README](README) file to explain the usage of routine, as well as a small set of spectra and associated output files to demonstrate the usage of the code. Also available are tables outlining the indices used by the hammer: single numerator indices are presented in [table1.txt](table1.txt), multiple numerator indices are presented in [table2.txt](table2.txt). For the definition of how each type of index is measured, as well as a full overview of the Hammer algorithm, see Appendix A of [Covey et al. 2007](http://adsabs.harvard.edu/abs/2007AJ....134.2398C). 
 
 **Screenshot of the Hammer's interactive spectral typing mode.**
-![](HammerScreenShot.png?raw=true =450x)
+</br> ![](HammerScreenShot.png?raw=true =350x)
