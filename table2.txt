@@ -1,0 +1,7 @@
+Spectral      Num.1	 Num.1	    Num.1     Num.2	Num.2	   Num.2     Denom.	Denom.
+Feature	      Start      End	    Weight    Start	End	   Weight    Start	End
+
+VO-a          7350.0     7400.0     0.5625    7510.0     7560.0    0.4375    7420.0     7470.0     
+VO-b          7860.0     7880.0      0.5      8080.0     8100.0    0.5       7960.0     8000.0     
+Rb-b          7922.6     7932.6      0.5      7962.6     7972.6    0.5       7942.6     7952.6     
+Cs-a          8496.1     8506.1      0.5      8536.1     8546.1    0.5       8516.1     8526.1     
