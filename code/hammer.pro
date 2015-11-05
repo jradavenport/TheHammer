@@ -10,9 +10,16 @@ SET_PLOT, 'X'
 !Y.THICK=2
 
 ;load the path to the hammer program directory
-HAMMER_PATH = '/Users/kevin/astro/idl/programs/hammerv1_2_5/'
+;HAMMER_PATH = '/Users/kevin/astro/idl/programs/hammerv1_2_5/'
 
-;check to make sure that the user agrees with this path -- 
+;auto-find the hammer path, based on code from FBEYE by @jradavenport
+HAMMER_PATH = file_search(strsplit(!path, path_sep(/search), /extract), 'hammer.pro')
+HAMMER_PATH = strmid(hammer_path, 0, strpos(hammer_path, 'code/hammer.pro'))
+HAMMER_PATH = HAMMER_PATH[0]
+
+
+
+;check to make sure that the user agrees with this path --
 ;if they don't allow them to change the path.
 PRINT, 'HAMMER_PATH should point to the directory containing '
 PRINT, 'hammer.pro and its ancillary programs, as well as '
@@ -24,21 +31,21 @@ PRINT, ' '
 
 ;tell the user how to correct the path if it isn't right for their installation
 IF hammer_pathcorrect NE 'y' THEN BEGIN
-    PRINT, 'Correct HAMMER_PATH by editing line 13 of hammer.pro '
+    PRINT, 'Correct HAMMER_PATH by editing hammer.pro '
     PRINT, 'before recompiling and running again.'
     STOP
 ENDIF
 
-;Now that we know HAMMER_PATH is correct, create the 
-;path to the indices.idl and templates.idl files... 
-INDICES_PATH = HAMMER_PATH+'indices.idl'
-TEMPLATES_PATH = HAMMER_PATH+'templates.idl'
+;Now that we know HAMMER_PATH is correct, create the
+;path to the indices.idl and templates.idl files...
+INDICES_PATH = HAMMER_PATH + 'resources/indices.idl'
+TEMPLATES_PATH = HAMMER_PATH + 'resources/templates.idl'
 
 ;check to see if the user wants to set a path to the spectra
 spectra_path_prompt = 'y'
 READ, spectra_path_prompt, PROMPT = 'Does your input list give the full path to each spectrum? (y or n): '
 IF spectra_path_prompt NE 'y' THEN BEGIN
-     SPECTRA_PATH = '' 
+     SPECTRA_PATH = ''
      READ, SPECTRA_PATH, PROMPT = 'Enter the necessary prefix for each files path: '
 ENDIF
 
@@ -66,25 +73,25 @@ IF skip_auto_typing EQ 'n' THEN BEGIN
     ;read in the input spectra list
     READCOL, infile, FORMAT = '(A,A)', inlist, ftype, /SILENT
     numfiles = N_ELEMENTS(inlist)
-    
+
     ;add prefix if necessary
     IF spectra_path_prompt NE 'y' THEN BEGIN
      flist = STRTRIM(SPECTRA_PATH,2)+inlist
     ENDIF ELSE flist = inlist
 
-    ;open idl save file that has spectral type indices 
+    ;open idl save file that has spectral type indices
     ;and deviations of the indices with spectral type
     RESTORE, INDICES_PATH
     n_indices = N_ELEMENTS(typeindices[0,*])
     n_indextemps = N_ELEMENTS(typeindices[*,0])
 
-    ;make an array which will later contain the 
+    ;make an array which will later contain the
     ;normalized differences between the indices
     ;measured for each target and the same indices
     ;measured in each of the templates.
     gorydetails = FLTARR(numfiles,n_indextemps,n_indices)
 
-    ;create an array to store the total index difference 
+    ;create an array to store the total index difference
     ;for each target - template comparison
     indexmatch = FLTARR(numfiles,n_indextemps)
     bestmatches = INTARR(numfiles)
@@ -105,7 +112,7 @@ IF skip_auto_typing EQ 'n' THEN BEGIN
     ;loop through the files and read in data
     FOR j=0L,numfiles-1 DO BEGIN
 
-        ;read in sloan spectra 
+        ;read in sloan spectra
         IF ftype[j] EQ 'sdssfits' THEN BEGIN
             thisspec = READSLOANSPEC(flist[j])
             waveraw = REFORM(thisspec[0,*])
@@ -132,13 +139,13 @@ IF skip_auto_typing EQ 'n' THEN BEGIN
             temp=STRSPLIT(flist[j],'-',/extract)
             fplate=FIX(temp[0])
             fmjd=LONG(temp[1])
-            ffiber=FIX(temp[2])  
+            ffiber=FIX(temp[2])
             READSPEC,fplate,ffiber,mjd=fmjd,flux=fluxraw,wave=waveraw,invvar=noiseraw
             noiseraw=1./SQRT(noiseraw)
 
             ;switch to air wavelengths
             VACTOAIR, waveraw
-           
+
         ENDIF
 
         ;now interpolate it all onto a uniform 1 Angstrom grid
@@ -152,7 +159,7 @@ IF skip_auto_typing EQ 'n' THEN BEGIN
 
         ;check in 3 wavelength ranges for the maximum flux
         blue = -1
-        yellow = -1 
+        yellow = -1
         red = -1
         IF TOTAL(WHERE(wave GT 4500 AND wave LT 4600)) GT -1 THEN blue = MEAN(flux(WHERE(wave GT 4500 AND wave LT 4600)))
         IF TOTAL(WHERE(wave GT 6100 AND wave LT 6200)) GT -1 THEN yellow = MEAN(flux(WHERE(wave GT 6100 AND wave LT 6200)))
@@ -163,7 +170,7 @@ IF skip_auto_typing EQ 'n' THEN BEGIN
             meanflux = blue
             signalregion = WHERE(wave GT 4500 AND wave LT 4600)
             originalsig = STDDEV(flux(signalregion))
-        ENDIF 
+        ENDIF
         IF yellow GT blue AND yellow GT red THEN BEGIN
             meanflux = yellow
             signalregion = WHERE(wave GT 6100 AND wave LT 6200)
@@ -182,7 +189,7 @@ IF skip_auto_typing EQ 'n' THEN BEGIN
         ;apply the S/N cut if the user wanted it
         IF firstsn GT sncutoff THEN BEGIN
 
-            ;measure indices for comparison to template objects 
+            ;measure indices for comparison to template objects
             targetindices = MEASUREGOODLINES(wave,flux,flist[j],0)
             indicesnoise = MEASUREGOODLINES(wave,flux,flist[j],1)
 
@@ -193,7 +200,7 @@ IF skip_auto_typing EQ 'n' THEN BEGIN
             weightedwave = (TOTAL(wave[usewave]*flux[usewave])*1.0)/(TOTAL(flux[usewave]))
             waveratio = weightedwave/unweightedwave
 
-            ;use the weighted wave/mean wave ratio divide objects into 
+            ;use the weighted wave/mean wave ratio divide objects into
             ;various crude spectral type ranges, and eliminate indices
             ;that aren't appropriate for that spectral type range.
 
@@ -238,10 +245,10 @@ IF skip_auto_typing EQ 'n' THEN BEGIN
                 ;print the results into autoSpTresults.tbl
                 PRINTF, 2, FORMAT = '(A100,2x,A10,2x,F10.4,2x,A2)', inlist[j], ftype[j], firstsn, printtype
 
-            ENDIF ELSE firstsn = -99. 
+            ENDIF ELSE firstsn = -99.
 
         ENDIF ELSE PRINTF, 3, FORMAT = '(A100,2x,A10,2x,F10.4)', inlist[j], ftype[j], firstsn
-    
+
         IF firstsn EQ -99. THEN PRINTF, 3, FORMAT = '(A100,2x,A10,2x,F10.4)', inlist[j], ftype[j], firstsn
 
     ENDFOR

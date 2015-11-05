@@ -1,5 +1,5 @@
 PRO EYECHECK, template_path, spectra_path_prompt, spectra_path
-CLOSE, 1 
+CLOSE, 1
 
 !P.FONT=1
 !P.THICK=1
@@ -55,11 +55,12 @@ plusminus = ['EARLIER','LATER']
 plusminusx = [9650,9650]
 plusminusy = [3.5, 1.5]
 
-type = -1977                  
+type = -1977
+
 nlines = NUMLINES('autoSpTresults.tbl')-1
 IF FILE_TEST('eyeout.tbl') EQ 1 THEN nfile = NUMLINES('eyeout.tbl') ELSE nfile = 0
-datacut = 'y'
 
+datacut = 'y'
 PRINT, ' '
 READ, datacut, prompt = 'Should we require a S/N cut for typing by eye? (reply y or n): '
 PRINT, ' '
@@ -73,17 +74,17 @@ PRINT, 'there are ',strtrim(nlines,2), ' spectra to examine'
 PRINT, 'Your Outfile has ',strtrim(nfile,2),' lines in it. We suggest starting at spectrum number ',strtrim(nfile,2),' (remember the spectra start at 0.)'
 READ, srt, prompt = 'At what spectrum would you like to begin? '
 PRINT, ' '
-  
+
 IF (srt EQ 0) THEN BEGIN
     CLOSE, 1
     OPENW, 1, 'eyeout.tbl'
 ENDIF ELSE BEGIN
     CLOSE, 1
     OPENU, 1 , 'eyeout.tbl',/append
-ENDELSE 
-  
+ENDELSE
+
 READCOL, 'autoSpTresults.tbl',infile,format,spectrasn,stringtype, Format = 'A,A,F,A', SKIPLINE = 1, /SILENT
- 
+
 ;add prefix if necessary
 IF spectra_path_prompt NE 'y' THEN BEGIN
      file = STRTRIM(SPECTRA_PATH,2)+infile
@@ -138,10 +139,10 @@ WHILE i LT nlines DO BEGIN
         ;;;;;Here is where the signal-to noise cut is set
 
         IF (spectrasn[i] GT sncutoff) THEN BEGIN
-   
+
             ;now pick an appropriate spectra for
             ;comparison with this object, remembering both
-            ;the initial guess, as well as the type of the closest 
+            ;the initial guess, as well as the type of the closest
             ;template we actually have to display
 
             firststringtype = stringtype[i]
@@ -171,7 +172,7 @@ WHILE i LT nlines DO BEGIN
                 displayingnum = templatearray[templatetoshow[guessmatch],2,0]
                 displayingtext = possibletypes[displayingnum]
 
-                ;now figure out how to normalize the two spectra to 
+                ;now figure out how to normalize the two spectra to
                 ;one another, keeping in mind that they might have vastly
                 ;different wavelength ranges -- just rangematch and normalize
                 ;the means of the overlapping areas.
@@ -199,19 +200,19 @@ WHILE i LT nlines DO BEGIN
                     cury = -99
 
                     CURSOR, curx, cury, /DOWN, /DATA
-                 
+
                     IF cury GE .3 AND cury LE 4.7 AND curx LT 4000 THEN BEGIN
-                        distances = ABS(cury - uberys) 
+                        distances = ABS(cury - uberys)
                         closest = MIN(distances,buttoncoord1)
                     ENDIF
-             
+
                     IF cury LT 4.7 AND cury GE 2.5 AND curx GT 9500 THEN BEGIN
                         IF buttoncoord1 EQ 0 AND buttoncoord2 EQ 0 THEN BEGIN
                            buttoncoord1 = buttoncoord1
                            buttoncoord2 = buttoncoord2
                         ENDIF ELSE BEGIN
                             buttoncoord2 = buttoncoord2-1
-                            IF buttoncoord2 EQ -1 THEN BEGIN 
+                            IF buttoncoord2 EQ -1 THEN BEGIN
                                 buttoncoord2 = 9
                                 buttoncoord1 = buttoncoord1-1
                             ENDIF
@@ -224,7 +225,7 @@ WHILE i LT nlines DO BEGIN
                            buttoncoord2 = buttoncoord2
                        ENDIF ELSE BEGIN
                            buttoncoord2 = buttoncoord2+1
-                           IF buttoncoord2 EQ 10 THEN BEGIN 
+                           IF buttoncoord2 EQ 10 THEN BEGIN
                                buttoncoord2 = 0
                                buttoncoord1 = buttoncoord1+1
                            ENDIF
@@ -234,7 +235,7 @@ WHILE i LT nlines DO BEGIN
                     IF cury GT 4.7 THEN BEGIN
                         prevbutton2 = buttoncoord2
                         distances = ABS(curx - specxs)
-                        closest = MIN(distances, buttoncoord2)         
+                        closest = MIN(distances, buttoncoord2)
                     ENDIF
 
                     IF cury LT 0 AND cury GT -98 THEN BEGIN
@@ -243,7 +244,7 @@ WHILE i LT nlines DO BEGIN
                         ENDIF
 
                         IF curx GE 4100 AND curx LT 5100 THEN BEGIN
-                            type = -1 
+                            type = -1
                             class = 'bad'
                         ENDIF
                         IF curx GE 5100 AND curx LT 6200 THEN BEGIN
@@ -252,13 +253,13 @@ WHILE i LT nlines DO BEGIN
                         IF curx GE 6200 AND curx LT 7100 THEN BEGIN
                             class = possibletypes[type]
                             type = -1
-                        ENDIF  
+                        ENDIF
                         IF curx GE 7100 AND curx LT 8100 THEN BEGIN
                             ;PRINT, FORMAT='(I5,2x,I5,2x,A10,2x,A10,2x,A10)', i, j, type, class , 'check1'
                             IF i NE 0 THEN type = -3 ELSE PRINT, 'Nowhere to go back to!'
                             ;PRINT, FORMAT='(I5,2x,I5,2x,A10,2x,A10,2x,A10)', i, j, type, class, 'check2'
                         ENDIF
-                     
+
                         IF curx GE 8100 THEN BEGIN
                             type = 100
                         ENDIF
@@ -269,7 +270,7 @@ WHILE i LT nlines DO BEGIN
                          CLOSE, 1
                          STOP
                     ENDIF
-  
+
                     IF (type GT -1) THEN BEGIN
 
                         IF newtargetsmooth EQ 1 THEN BEGIN
@@ -287,7 +288,7 @@ WHILE i LT nlines DO BEGIN
                             XYOUTS, plusminusx, plusminusy, plusminus
 
                             CURSOR, curx, cury, /DOWN, /DATA
-                            distances = ABS(curx - specxs) 
+                            distances = ABS(curx - specxs)
                             closest = MIN(distances,smoothindex)
 
                             forsmooth = smoothnum[smoothindex]
@@ -310,15 +311,15 @@ WHILE i LT nlines DO BEGIN
                                  READCOL, file[i], wave, flux, /SILENT
                             ENDIF
 
-                            ;smooth the target spectra 
+                            ;smooth the target spectra
                             flux = SMOOTH(flux, forsmooth,/EDGE_TRUNCATE)
 
-                            newtargetsmooth = 0 
+                            newtargetsmooth = 0
                         ENDIF
 
                         thisone = WHERE(possibletypes EQ (specbuttons[buttoncoord1,buttoncoord2])[0] )
                         IF TOTAL(thisone) NE -1 AND N_ELEMENTS(thisone) EQ 1 THEN type = thisone
-                         
+
                         ;PRINT, buttoncoord1, buttoncoord2, type, thisone, possibletypes[type], templatetoshow[type]
 
                         firstwave2 = REFORM(templatearray[templatetoshow[type],0,*])
@@ -330,7 +331,7 @@ WHILE i LT nlines DO BEGIN
                         displayingnum = templatearray(templatetoshow[type],2,0)
                         displayingtext = possibletypes[displayingnum]
 
-                        ;now figure out how to normalize the two spectra to 
+                        ;now figure out how to normalize the two spectra to
                         ;one another, keeping in mind that they might have vastly
                         ;different wavelength ranges -- just rangematch and normalize
                         ;the means of the overlapping areas.
@@ -354,7 +355,7 @@ WHILE i LT nlines DO BEGIN
                                IF type EQ -1 THEN BEGIN
                                    PRINTF, 1, FORMAT = '(A90,2x,A3,2x,A3)',infile[i],class, stringtype[i]
                                    j=1
-                               ENDIF 
+                               ENDIF
 
                                IF type EQ -2 THEN BEGIN
                                    READ, class, PROMPT = '3 letter code for odd object: '
@@ -362,12 +363,12 @@ WHILE i LT nlines DO BEGIN
                                    j=1
                                ENDIF
 
-                               ;allow the user to go 
+                               ;allow the user to go
                                IF type EQ -3 THEN BEGIN
                                    CLOSE, 1
                                    READCOL, 'eyeout.tbl', FORMAT = '(A,A,A)',oldnames,oldtypes, oldstringtype, /SILENT
                                    redo = N_ELEMENTS(oldnames)
-                                   ;PRINT, FORMAT='(I5,2x,I5,2x,A10,2x,A10,2x,I5,2x,A10)', i, j, type, class, redo, 'check3' 
+                                   ;PRINT, FORMAT='(I5,2x,I5,2x,A10,2x,A10,2x,I5,2x,A10)', i, j, type, class, redo, 'check3'
                                    OPENW, 1, 'eyeout.tbl'
                                    FOR m=0,redo-2 DO BEGIN
                                        PRINTF, 1, FORMAT = '(A100,2x,A3,2x,A3)',oldnames[m],oldtypes[m], oldstringtype[m]
@@ -378,7 +379,7 @@ WHILE i LT nlines DO BEGIN
                                    ;PRINT, FORMAT='(I5,2x,I5,2x,A10,2x,A10,2x,I5,A10)', i, j, type, class, redo, 'check4'
                                ENDIF
                     ENDELSE
-                ENDWHILE 
+                ENDWHILE
             ENDIF
         ENDIF ELSE BEGIN
             class = 'S/N'
@@ -408,7 +409,7 @@ IF neyeout EQ new THEN BEGIN
     FOR i = 0, neyeout-1 DO BEGIN
         IF ewname[i] EQ eyename[i] THEN BEGIN
             PRINTF, 3, FORMAT='(a100,2x,A3,2x,A3,2x,26(1x,f15.7),a5)', eyename[i], eyetype[i], original[i], ewHa[i], ewerr[i],diff[i],Tio5[i],Tio5err[i],CaH1[i],CaH1err[i],CaH2[i],CaH2err[i],CaH3[i],CaH3err[i],tio8[i],tio8err[i],ti05_u_test[i],tio5_l_test[i],cah1_u_test[i],cah1_l_test[i],cah2_u_test[i],cah2_l_test[i],cah3_u_test[i],cah3_l_test[i],ti08_u_test[i],tio8_l_test[i],hacont[i],haconterr[i],sig2noise[i],type[i]
-        ENDIF  
+        ENDIF
     ENDFOR
     CLOSE, 3
 ENDIF ELSE BEGIN
@@ -417,4 +418,3 @@ ENDIF ELSE BEGIN
 ENDELSE
 
 end
-
