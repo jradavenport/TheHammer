@@ -262,6 +262,8 @@ IF skip_auto_typing EQ 'n' THEN BEGIN
 ENDIF
 
 ;allow the user to do an eyecheck
-IF KEYWORD_SET(key) THEN EYECHECK_KEY, TEMPLATES_PATH, spectra_path_prompt, SPECTRA_PATH ELSE EYECHECK, TEMPLATES_PATH, spectra_path_prompt, SPECTRA_PATH
+IF KEYWORD_SET(key) THEN $
+    EYECHECK_KEY, TEMPLATES_PATH, spectra_path_prompt, SPECTRA_PATH ELSE EYECHECK, TEMPLATES_PATH, spectra_path_prompt, SPECTRA_PATH
 
+RETURN
 END

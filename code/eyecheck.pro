@@ -57,8 +57,18 @@ plusminusy = [3.5, 1.5]
 
 type = -1977
 
-nlines = NUMLINES('autoSpTresults.tbl')-1
-IF FILE_TEST('eyeout.tbl') EQ 1 THEN nfile = NUMLINES('eyeout.tbl') ELSE nfile = 0
+; nlines = NUMLINES('autoSpTresults.tbl')-1
+IF FILE_TEST('autoSpTresults.tbl') EQ 1 THEN BEGIN
+    nlines = FILE_LINES('autoSpTresults.tbl') - 1
+ENDIF ELSE BEGIN
+    print, 'ERROR: autoSpTresults.tbl does not exist!'
+    print, 'Maybe you forgot to run once before skipping straight to eyecheck stage?'
+    print, 'Halting!!!!'
+    STOP
+ENDELSE
+
+; IF FILE_TEST('eyeout.tbl') EQ 1 THEN nfile = NUMLINES('eyeout.tbl') ELSE nfile = 0
+IF FILE_TEST('eyeout.tbl') EQ 1 THEN nfile = FILE_LINES('eyeout.tbl') ELSE nfile = 0
 
 datacut = 'y'
 PRINT, ' '
@@ -394,7 +404,10 @@ CLOSE, 1
 
 READCOL, 'eyeout.tbl', FORMAT='(A,A,A)', eyename, eyetype, original, /SILENT
 
-READCOLMORE, 'ew.tbl', FORMAT='(A,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,A)',ewname,ewHa, ewerr,diff,Tio5,Tio5err,CaH1,CaH1err,CaH2,CaH2err,CaH3,CaH3err,tio8,tio8err,ti05_u_test,tio5_l_test,cah1_u_test,cah1_l_test,cah2_u_test,cah2_l_test,cah3_u_test,cah3_l_test,ti08_u_test,tio8_l_test,hacont,haconterr,sig2noise,type, /SILENT
+READCOLMORE, 'ew.tbl', FORMAT='(A,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,F,A)',$
+    ewname,ewHa, ewerr,diff,Tio5,Tio5err,CaH1,CaH1err,CaH2,CaH2err,CaH3,CaH3err,tio8,tio8err,$
+    ti05_u_test,tio5_l_test,cah1_u_test,cah1_l_test,cah2_u_test,cah2_l_test,cah3_u_test,cah3_l_test,$
+    ti08_u_test,tio8_l_test,hacont,haconterr,sig2noise,type, /SILENT
 
 ;writeout after testing that both lists have the same number of
 ;objects
