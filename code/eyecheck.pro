@@ -194,8 +194,13 @@ WHILE i LT nlines DO BEGIN
 
                 PLOT, wave,normflux1,XRANGE=[3800,9500],YRANGE=[0,5], /XSTY, /YSTY, XMARGIN = [6,10]
                 OPLOT, wave2,normflux2,COLOR=225, LINESTYLE = 2
-                EYELEGEND,['First Guess: ' + possibletypes[firstguess],'Current Guess: ' + STRTRIM(possibletypes[type],2),'Current Template: ' + STRTRIM(displayingtext,2)], POS=[.15,.95], CHARSIZE = 1.5, BOX = 0
-                EYELEGEND, ['file #: '+STRTRIM(STRING(FIX(i)),2),'file: '+STRTRIM(file[i],2)], POS=[.5,.95], BOX=0, CHARSIZE = 1.5
+                EYELEGEND,['First Guess: ' + possibletypes[firstguess],$
+                            'Current Guess: ' + STRTRIM(possibletypes[type],2),$
+                            'Current Template: ' + STRTRIM(displayingtext,2)], $
+                        POS=[.15,.95], CHARSIZE = 1.5, BOX = 0,/normal
+                EYELEGEND, ['file #: '+STRTRIM(STRING(FIX(i)),2),$
+                            'file: '+STRTRIM(file[i],2)], $
+                        POS=[.5,.95], BOX=0, CHARSIZE = 1.5,/normal
                 XYOUTS, specxs, specys, specbuttons[buttoncoord1,*]
                 FOR k=0,9 DO XYOUTS, specxs[options[buttoncoord1,k]],specys[options[buttoncoord1,k]], specbuttons[buttoncoord1,options[buttoncoord1,k]], COLOR = 150
                 XYOUTS, specxs[buttoncoord2], specys[buttoncoord2], specbuttons[buttoncoord1,buttoncoord2], COLOR = 225
@@ -289,8 +294,8 @@ WHILE i LT nlines DO BEGIN
 
                             PLOT, wave, normflux1, XRANGE=[3800,9500],YRANGE=[0,5], /XSTY, /YSTY, XMARGIN = [6,10]
                             OPLOT, wave2,normflux2,COLOR=225, LINESTYLE = 2
-                            EYELEGEND,['First Guess: ' + possibletypes[firstguess],'Current Guess: ' + STRTRIM(possibletypes[type],2),'Current Template: ' + STRTRIM(displayingtext,2)], POS=[.15,.95], CHARSIZE = 1.5, BOX = 0
-                            EYELEGEND, ['file #: '+STRTRIM(STRING(FIX(i)),2),'file: '+STRTRIM(file[i],2)], POS=[.5,.95], BOX=0, CHARSIZE = 1.5
+                            EYELEGEND,/normal,['First Guess: ' + possibletypes[firstguess],'Current Guess: ' + STRTRIM(possibletypes[type],2),'Current Template: ' + STRTRIM(displayingtext,2)], POS=[.15,.95], CHARSIZE = 1.5, BOX = 0
+                            EYELEGEND,/normal, ['file #: '+STRTRIM(STRING(FIX(i)),2),'file: '+STRTRIM(file[i],2)], POS=[.5,.95], BOX=0, CHARSIZE = 1.5
                             XYOUTS, specxs, specys, smoothbuttons, COLOR = 150
                             XYOUTS, uberxs, uberys, ubertypebuttons
                             XYOUTS, uberxs[buttoncoord1], uberys[buttoncoord1], ubertypebuttons[buttoncoord1], COLOR = 225
@@ -351,8 +356,8 @@ WHILE i LT nlines DO BEGIN
 
                         PLOT, wave,normflux1,XRANGE=[3800,9500],YRANGE=[0,5], /XSTY, /YSTY, XMARGIN = [6,10]
                         OPLOT, wave2,normflux2,COLOR=225, LINESTYLE = 2
-                        EYELEGEND,['First Guess: ' + possibletypes[firstguess],'Current Guess: ' + STRTRIM(possibletypes[type],2),'Current Template: ' + STRTRIM(displayingtext,2)], POS=[.15,.95], CHARSIZE = 1.5, BOX = 0
-                        EYELEGEND, ['file #: '+STRTRIM(STRING(FIX(i)),2),'file: '+STRTRIM(infile[i],2)], POS=[.5,.95], BOX=0, CHARSIZE = 1.5
+                        EYELEGEND,/normal,['First Guess: ' + possibletypes[firstguess],'Current Guess: ' + STRTRIM(possibletypes[type],2),'Current Template: ' + STRTRIM(displayingtext,2)], POS=[.15,.95], CHARSIZE = 1.5, BOX = 0
+                        EYELEGEND,/normal, ['file #: '+STRTRIM(STRING(FIX(i)),2),'file: '+STRTRIM(infile[i],2)], POS=[.5,.95], BOX=0, CHARSIZE = 1.5
                         XYOUTS, specxs, specys, specbuttons[buttoncoord1,*]
                         FOR k=0,9 DO XYOUTS, specxs[options[buttoncoord1,k]],specys[options[buttoncoord1,k]], specbuttons[buttoncoord1,options[buttoncoord1,k]], COLOR = 150
                         XYOUTS, specxs[buttoncoord2], specys[buttoncoord2], specbuttons[buttoncoord1,buttoncoord2], COLOR = 225
