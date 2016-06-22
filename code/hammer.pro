@@ -1,5 +1,12 @@
 PRO hammer, infile, KEY = key
 
+; make sure user handed an input list!
+if N_params() LT 1 then begin
+    print,'Error: must pass an input file list:'
+    print,'HAMMER, infile [, /key]'
+    RETURN
+endif
+
 ;begin by setting parameters for any plots we might make along the way.
 SET_PLOT, 'X'
 !P.FONT=1
@@ -9,14 +16,14 @@ SET_PLOT, 'X'
 !X.THICK=2
 !Y.THICK=2
 
-;load the path to the hammer program directory
-;HAMMER_PATH = '/Users/kevin/astro/idl/programs/hammerv1_2_5/'
 
 ;auto-find the hammer path, based on code from FBEYE by @jradavenport
 HAMMER_PATH = file_search(strsplit(!path, path_sep(/search), /extract), 'hammer.pro')
 HAMMER_PATH = strmid(hammer_path, 0, strpos(hammer_path, 'code/hammer.pro'))
 HAMMER_PATH = HAMMER_PATH[0]
 
+;*** if HAMMER_PATH auto-find doesn't work, manually set the path in this line: ***
+;HAMMER_PATH = '/Users/janedoe/idl/TheHammer/'
 
 
 ;check to make sure that the user agrees with this path --
@@ -31,7 +38,8 @@ PRINT, ' '
 
 ;tell the user how to correct the path if it isn't right for their installation
 IF hammer_pathcorrect NE 'y' THEN BEGIN
-    PRINT, 'Correct HAMMER_PATH by editing hammer.pro '
+    PRINT, 'This should not have happened... BUT,'
+    PRINT, 'manualy correct HAMMER_PATH by editing hammer.pro '
     PRINT, 'before recompiling and running again.'
     STOP
 ENDIF
@@ -110,7 +118,9 @@ IF skip_auto_typing EQ 'n' THEN BEGIN
     PRINTF, 3, 'filename                     s/n'
 
     ;loop through the files and read in data
+    print,'Running ',strtrim(string(numfiles),2),' files...'
     FOR j=0L,numfiles-1 DO BEGIN
+        print,j,flist[j]
 
         ;read in sloan spectra
         IF ftype[j] EQ 'sdssfits' THEN BEGIN
@@ -186,7 +196,8 @@ IF skip_auto_typing EQ 'n' THEN BEGIN
         ;the flux region with the most flux
         firstsn = ABS(meanflux)/ABS(originalsig)
 
-        ;apply the S/N cut if the user wanted it
+        ; apply the S/N cut if the user wanted it
+        ; if user didnt, sncutoff=0, so will run for every star
         IF firstsn GT sncutoff THEN BEGIN
 
             ;measure indices for comparison to template objects
@@ -265,5 +276,6 @@ ENDIF
 IF KEYWORD_SET(key) THEN $
     EYECHECK_KEY, TEMPLATES_PATH, spectra_path_prompt, SPECTRA_PATH ELSE EYECHECK, TEMPLATES_PATH, spectra_path_prompt, SPECTRA_PATH
 
+print,'HAMMER is complete'
 RETURN
 END

@@ -119,7 +119,7 @@ type via 30 spectral indices.  Columns are: the filename, the spectral format,
 the S/N of the spectra, and the automatically assigned spectral type.
 
 ew.tbl -- results from A. West's subdwarf and activity codes.  See the code
-themselves (in the /neededpros directory) to determine what each column is.
+themselves to determine what each column is.
 
 eyeout.tbl -- a minimal output from the eyecheck portion of the code,
 recording the filename, visual type, and automatically assigned type.
