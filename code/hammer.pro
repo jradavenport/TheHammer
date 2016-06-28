@@ -7,6 +7,13 @@ if N_params() LT 1 then begin
     RETURN
 endif
 
+
+if FILE_TEST(infile) eq 0 then begin
+   print,'Error: ' + infile + ' not found!'
+   print,'Check the file path and try again.'
+   RETURN
+endif
+
 ;begin by setting parameters for any plots we might make along the way.
 SET_PLOT, 'X'
 !P.FONT=1
